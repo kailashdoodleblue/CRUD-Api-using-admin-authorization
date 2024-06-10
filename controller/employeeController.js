@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.createEmployee = async (req, res) => {
-  
+
   try {
     let hashedpass = await bcrypt.hash(req.body.password, 10)
     req.body.password = hashedpass;
@@ -17,25 +17,25 @@ exports.createEmployee = async (req, res) => {
   }
 }
 
-exports.login = async (req,res)=>{
+exports.login = async (req, res) => {
   let { empName, password } = req.body;
-  let checkuser=await Employee.findAll({attributes: ['empName','password'], where:{empName:empName}})
+  let checkuser = await Employee.findAll({ attributes: ['empName', 'password'], where: { empName: empName } })
   console.log(checkuser)
   let user = checkuser[0]
-  
-  if(!user){
-      return res.status(401).json({ error: 'UserName not found' })
+
+  if (!user) {
+    return res.status(401).json({ error: 'UserName not found' })
   }
   console.log(user.password)
   console.log(password)
-  bcrypt.compare(password,user.password,(err,checkpass)=>{
-      console.log(checkpass)
-      if (!checkpass) {
-          return res.status(401).json({ error: 'Invalid password' });
-      }
-      token=jwt.sign({ empName }, 'hello',{ expiresIn: '900s' }) 
-      return res.json({token,message:`${empName} login successful`})      
-  })   
+  bcrypt.compare(password, user.password, (err, checkpass) => {
+    console.log(checkpass)
+    if (!checkpass) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+    token = jwt.sign({ empName }, 'hello', { expiresIn: '900s' })
+    return res.json({ token, message: `${empName} login successful` })
+  })
 
 }
 
