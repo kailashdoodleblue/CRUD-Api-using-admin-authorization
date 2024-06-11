@@ -13,26 +13,36 @@ exports.verifytoken = async (req, res, next) => {
             return res.status(401).json({ error: 'Token is required' });
         }
         jwt.verify(token, 'hello', async (err, decoded) => {
-            try {
-                let username = decoded.empName
-
-                let emp = await Employee.findOne({ where: { role: "HR", empName: username } });
-                if (emp != null) {
-                    next()
-                }
-                else {
-                    return res.status(401).json({ error: 'User dont have access' });
-                }
-            }
-            catch (err) {
-                return res.status(401).json({ error: 'Invalid token' });
-            }
-
-            console.log(decoded)
+            
+            // console.log(decoded)
             if (err) {
                 return res.status(401).json({ error: 'Invalid token' });
             }
-            // next()
+            else{
+                if (req.method != 'GET') {
+                
+                    try {
+                        // let username = decoded.role
+                        // let emp = await Employee.findOne({ where: { role: "HR", empName: username } });
+                        // if (emp != null) {
+                        if (decoded.role == "HR") {
+                            next()
+                        }
+    
+                        else {
+                            return res.status(401).json({ error: 'User dont have access' });
+                        }
+                    }
+                    catch (err) {
+                        
+                    return res.status(401).json({ error: 'Invalid token' });
+                    }
+                }
+                else{
+                    next()
+                }
+            }
+            
         });
     }
 }

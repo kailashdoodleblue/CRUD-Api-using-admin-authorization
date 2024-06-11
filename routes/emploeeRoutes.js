@@ -5,8 +5,8 @@ const verify=require('../verificaion/verifytoken')
 
 router.post('/',verify.verifytoken,employeeController.createEmployee)
 router.post('/login',employeeController.login)
-router.get('/',employeeController.getAllEmployees)
-router.get('/:id',employeeController.getEmployeeById)
+router.get('/',verify.verifytoken,employeeController.getAllEmployees)
+router.get('/:id',verify.verifytoken,employeeController.getEmployeeById)
 router.put('/:id',verify.verifytoken, employeeController.updateEmployee);
 router.delete('/:id',verify.verifytoken, employeeController.deleteEmployee);
 module.exports=router
